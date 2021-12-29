@@ -1,6 +1,8 @@
-package TrainSet;
+package trainSet;
 
 import java.util.ArrayList;
+
+import fullyConnectedNetwork.NetworkTools;
 
 public class TrainSet {
 	public final int INPUT_SIZE;
@@ -17,6 +19,18 @@ public class TrainSet {
 	public void addData(double[] input, double[] target) {
 		if(input.length!=INPUT_SIZE||target.length!=OUTPUT_SIZE) return;
 		data.add(new double[][] {input, target});
+	}
+	
+	public TrainSet extractBatch(int size) {
+		if(size > 0 && size <= this.size()) {
+			TrainSet set = new TrainSet(INPUT_SIZE,OUTPUT_SIZE);
+			int ids[] = NetworkTools.createIntegerSet(size, 0, this.size());
+			for(int i = 0; i < size; i++) {
+				set.addData(this.getInput(ids[i]), this.getOutput(ids[i]));
+			}
+			return set;
+		}
+		else return this;
 	}
 	
 	public int size() {

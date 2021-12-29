@@ -1,6 +1,7 @@
 package fullyConnectedNetwork;
 import java.util.Arrays;
-import TrainSet.TrainSet;
+
+import trainSet.TrainSet;
 
 /**
  * Neural Network
@@ -71,7 +72,12 @@ public class Network {
 	}
 	
 	
-	
+	/**
+	 *  Trains the neural network with a set of samples
+	 * @param set the train set
+	 * @param loops the number of times we train the network
+	 * @param batchSize the size of a batch
+	 */
 	public void train(TrainSet set, int loops, int batchSize) {
 		if(set.getINPUT_SIZE()!=INPUT_SIZE||set.getOUTPUT_SIZE()!=OUTPUT_SIZE) return;
 		for(int i = 0; i < loops; i++) {
@@ -79,9 +85,9 @@ public class Network {
 			for(int sample = 0; sample<batchSize; sample++) {
 				train(batch.getInput(sample), batch.getOutput(sample), 0.3);
 			}
-			
 		}
 	}
+	
 	
 	
 	/**
