@@ -63,7 +63,8 @@ public class MnistImageFile extends MnistFile {
 	public void setnumCols(int numCols) {
 		this.numCols = numCols;
 	}
-
+	
+	@Override
 	public int getItemSize() {
 		return numRows * numCols;
 	}

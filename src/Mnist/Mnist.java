@@ -12,7 +12,7 @@ public class Mnist {
 		//input layer is 28x28 (size of an image) and output is 10 (10 possible digits)
 		Network network = new Network(28*28, 70, 35, 10); 
 		TrainSet set = createTrainSet(0, 4999);
-		trainData(network, set, 10, 50, 100);
+		trainData(network, set, 100, 50, 100);
 		
 		TrainSet testSet = createTrainSet(5000,9999);
 		testTrainSet(network, testSet);
@@ -79,10 +79,6 @@ public class Mnist {
 		System.out.println("Testing Completed:" + numCorrect + " / " + set.size() + " -> " + (double) (100* numCorrect) / (double) set.size() + " %");	
 		
 	}
-	
-	
-	
-	
 	
 	
 	

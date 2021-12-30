@@ -55,5 +55,6 @@ public class TrainSet {
 		return OUTPUT_SIZE;
 	}
 	
-	
 }
+	
+	

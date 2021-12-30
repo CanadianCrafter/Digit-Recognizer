@@ -43,7 +43,7 @@ public abstract class MnistFile extends RandomAccessFile {
 	 * Gets the size of each item in the MNIST database in bytes
 	 * @return the number of bytes for each item 
 	 */
-	private int getItemSize() {
+	public int getItemSize() {
 		return 1; //default size for an item is 1 byte
 	}
 	
