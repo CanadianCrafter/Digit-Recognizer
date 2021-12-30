@@ -37,17 +37,15 @@ public class NetworkTools {
 		return arr;
 	}
 	
-	public static int[] createIntegerSet(int size, int lowerBound, int upperBound) {
+	public static Integer[] createIntegerSet(int size, int lowerBound, int upperBound) {
 		if(size<1) return null;
-		int[] arr = new int[size];
-		boolean[] added = new boolean[size];
+		Integer[] arr = new Integer[size];
 		for(int i = 0; i<size; i++) {
-			int num = -1;
-			do {
-				num = (int) randomValue(lowerBound, upperBound);
-			}while(added[num]);
-			arr[i] = num;
-			added[num] = true;
+			int n = (int) randomValue(lowerBound, upperBound);
+			while(containsValue(arr,n)) {
+				n = (int) randomValue(lowerBound, upperBound);
+			}
+			arr[i] = n;
 		}
 		return arr;
 	}

@@ -1,7 +1,7 @@
 package fullyConnectedNetwork;
 import java.util.Arrays;
 
-import trainSet.TrainSet;
+import TrainSet.TrainSet;
 
 /**
  * Neural Network
@@ -59,13 +59,13 @@ public class Network {
 		
 		for(int i =0;i<NETWORK_SIZE;i++) {
 			this.output[i] = new double[NETWORK_LAYER_SIZES[i]];
-			this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], 0.2, 0.8);
+			this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], -0.5,0.7);
 			this.errorSignal[i] = new double[NETWORK_LAYER_SIZES[i]];
 			this.outputDerivative[i] = new double[NETWORK_LAYER_SIZES[i]];
 			
 			//there are no weights for the input layer
 			if(i>0) {
-				this.weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i],NETWORK_LAYER_SIZES[i-1], -0.5,0.5);
+				this.weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i],NETWORK_LAYER_SIZES[i-1], -1,1);
 			}
 		}
 		
@@ -85,9 +85,9 @@ public class Network {
 			for(int sample = 0; sample<batchSize; sample++) {
 				train(batch.getInput(sample), batch.getOutput(sample), 0.3);
 			}
+			System.out.println(MeanSquaredError(batch));
 		}
 	}
-	
 	
 	
 	/**
@@ -144,13 +144,12 @@ public class Network {
 		//Next neuron because back propagation starts from the output layer and goes through each layer until the first hidden layer.
 		for (int layer = NETWORK_SIZE - 2; layer > 0; layer--) {
 			for (int neuron = 0; neuron < NETWORK_LAYER_SIZES[layer]; neuron++) {
-
+				double sum = 0;
 				for (int nextNeuron = 0; nextNeuron < NETWORK_LAYER_SIZES[layer + 1]; nextNeuron++) {
-					errorSignal[layer][neuron] += weights[layer + 1][nextNeuron][neuron]
-							* errorSignal[layer + 1][nextNeuron];
+					sum += weights[layer + 1][nextNeuron][neuron] * errorSignal[layer + 1][nextNeuron];
 				}
 
-				errorSignal[layer][neuron] *= outputDerivative[layer][neuron];
+				errorSignal[layer][neuron] = sum * outputDerivative[layer][neuron];
 
 			}
 		}
@@ -177,6 +176,26 @@ public class Network {
 			}
 		}
 
+	}
+	
+	public double MeanSquaredError(double[] input, double[] target) {
+		if(input.length!=INPUT_SIZE||target.length!=OUTPUT_SIZE) return 0;
+		feedForward(input);
+		double mse = 0;
+		for(int i = 0; i < target.length; i++) {
+			mse += Math.pow(output[NETWORK_SIZE-1][i]-target[i], 2);
+		}
+		//Divide by two since: the errorSignal is error*derivative of error = 1/2 d/dx error^2
+		//The 2s cancel out. Note that multiplying by a scalar does not affect the location of a minimum.
+		return mse / (2d + target.length);
+	}
+	
+	public double MeanSquaredError(TrainSet set) {
+		double mse = 0;
+		for(int i = 0; i < set.size(); i++) {
+			mse += MeanSquaredError(set.getInput(i),set.getOutput(i));
+		}
+		return mse / set.size();
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package trainSet;
+package TrainSet;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public class TrainSet {
 	public TrainSet extractBatch(int size) {
 		if(size > 0 && size <= this.size()) {
 			TrainSet set = new TrainSet(INPUT_SIZE,OUTPUT_SIZE);
-			int ids[] = NetworkTools.createIntegerSet(size, 0, this.size());
+			Integer ids[] = NetworkTools.createIntegerSet(size, 0, this.size());
 			for(int i = 0; i < size; i++) {
 				set.addData(this.getInput(ids[i]), this.getOutput(ids[i]));
 			}
