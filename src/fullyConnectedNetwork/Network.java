@@ -59,13 +59,14 @@ public class Network {
 		
 		for(int i =0;i<NETWORK_SIZE;i++) {
 			this.output[i] = new double[NETWORK_LAYER_SIZES[i]];
-			this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], -0.5,0.7);
+			//The optimal range for weights and biases is [-1/sqrt(n), 1/sqrt(n)] with n being the amount of neurons in the next layer.
+			this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], -1/Math.sqrt(NETWORK_LAYER_SIZES[i]), 1/Math.sqrt(NETWORK_LAYER_SIZES[i]));
 			this.errorSignal[i] = new double[NETWORK_LAYER_SIZES[i]];
 			this.outputDerivative[i] = new double[NETWORK_LAYER_SIZES[i]];
 			
 			//there are no weights for the input layer
 			if(i>0) {
-				this.weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i],NETWORK_LAYER_SIZES[i-1], -1,1);
+				this.weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i],NETWORK_LAYER_SIZES[i-1],  -1/Math.sqrt(NETWORK_LAYER_SIZES[i]), 1/Math.sqrt(NETWORK_LAYER_SIZES[i]));
 			}
 		}
 		

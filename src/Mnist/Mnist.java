@@ -11,10 +11,10 @@ public class Mnist {
 	public static void main(String[] args) {
 		//input layer is 28x28 (size of an image) and output is 10 (10 possible digits)
 		Network network = new Network(28*28, 70, 35, 10); 
-		TrainSet set = createTrainSet(0, 4999);
-		trainData(network, set, 100, 50, 100);
+		TrainSet set = createTrainSet(0, 49999);
+		trainData(network, set, 1000, 50, 100);
 		
-		TrainSet testSet = createTrainSet(5000,9999);
+		TrainSet testSet = createTrainSet(50000,59999);
 		testTrainSet(network, testSet);
 	}
 	
@@ -35,7 +35,7 @@ public class Mnist {
 				if(i % 100 == 0) {
 					System.out.println("Prepared: " + i);
 				}
-				
+				 
 				double input[] = imageFile.readInput();
 				double output[] = new double [10];
 				output[labelFile.readLabel()] = 1d; //the correct digit has value 1. Others have 0
