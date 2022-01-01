@@ -2,6 +2,11 @@ package Mnist;
 
 import java.io.IOException;
 
+/**
+ * Processing MNIST files containing image samples.
+ * @author Bryan Wang
+ *
+ */
 public class MnistImageFile extends MnistFile {
 	private int numRows;
 	private int numCols;
@@ -13,7 +18,7 @@ public class MnistImageFile extends MnistFile {
 	}
 	
 	/**
-	 * Reads the image at the current position
+	 * Reads the "image at the current position
 	 * @return
 	 * @throws IOException
 	 */
@@ -27,10 +32,17 @@ public class MnistImageFile extends MnistFile {
 		return image;
 	}
 	
+	/**
+	 * Reads in the "image" as an input array
+	 * @return A double array with each value from 0 to 1.
+	 * @throws IOException
+	 */
 	public double[] readInput() throws IOException {
 		double[] input = new double [getItemSize()];
 		for(int i = 0; i < getItemSize(); i++) {
-			input[i] = (double) readUnsignedByte() / 256d;
+			//Each pixels range from 0 to 255, so we divide by 255 so the data is normalized to fit in [0,1].
+			//This makes things a lot easier to work with.
+			input[i] = (double) readUnsignedByte() / 255d; 
 		}
 		return input;
 	}

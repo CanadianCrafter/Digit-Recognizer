@@ -2,11 +2,17 @@ package Mnist;
 
 import java.io.*;
 
+/**
+ * Abstract class for MNIST files
+ * @author Bryan Wang
+ *
+ */
 public abstract class MnistFile extends RandomAccessFile {
 	private int numItems;
 	
 	public MnistFile(String name, String mode) throws IOException {
 		super(name, mode);
+		//Checks if the file starts with the Magic Number (for verification). If not, then the program is reading the wrong file.
 		if(getMagicNumber() != readInt()) {
 			System.out.println("Error: This MNIST file should start with " + getMagicNumber());
 		}

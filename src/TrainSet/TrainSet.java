@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import fullyConnectedNetwork.NetworkTools;
 
+/**
+ * A set of training data (images and labels).
+ * @author Bryan Wang
+ *
+ */
 public class TrainSet {
 	public final int INPUT_SIZE;
 	public final int OUTPUT_SIZE;
@@ -21,6 +26,11 @@ public class TrainSet {
 		data.add(new double[][] {input, target});
 	}
 	
+	/**
+	 * Extracts a batch of training data from the entire TrainSet
+	 * @param size batch size
+	 * @return A TrainSet containing 'size' many training samples
+	 */
 	public TrainSet extractBatch(int size) {
 		if(size > 0 && size <= this.size()) {
 			TrainSet set = new TrainSet(INPUT_SIZE,OUTPUT_SIZE);

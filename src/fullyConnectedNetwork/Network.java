@@ -60,28 +60,29 @@ public class Network {
 		for(int i =0;i<NETWORK_SIZE;i++) {
 			this.output[i] = new double[NETWORK_LAYER_SIZES[i]];
 			//The optimal range for weights and biases is [-1/sqrt(n), 1/sqrt(n)] with n being the amount of neurons in the next layer.
-			this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], -1/Math.sqrt(NETWORK_LAYER_SIZES[i]), 1/Math.sqrt(NETWORK_LAYER_SIZES[i]));
+			this.bias[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i], 
+					-1/Math.sqrt(NETWORK_LAYER_SIZES[i]), 1/Math.sqrt(NETWORK_LAYER_SIZES[i]));
 			this.errorSignal[i] = new double[NETWORK_LAYER_SIZES[i]];
 			this.outputDerivative[i] = new double[NETWORK_LAYER_SIZES[i]];
 			
 			//there are no weights for the input layer
 			if(i>0) {
-				this.weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i],NETWORK_LAYER_SIZES[i-1],  -1/Math.sqrt(NETWORK_LAYER_SIZES[i]), 1/Math.sqrt(NETWORK_LAYER_SIZES[i]));
+				this.weights[i] = NetworkTools.createRandomArray(NETWORK_LAYER_SIZES[i],NETWORK_LAYER_SIZES[i-1],  
+						-1/Math.sqrt(NETWORK_LAYER_SIZES[i]), 1/Math.sqrt(NETWORK_LAYER_SIZES[i]));
 			}
 		}
 		
 	}
 	
-	
 	/**
-	 *  Trains the neural network with a set of samples
+	 * Trains the neural network with a set of samples
 	 * @param set the train set
-	 * @param loops the number of times we train the network
+	 * @param numBatches is the number of batches we take, and the number of times we train the network
 	 * @param batchSize the size of a batch
 	 */
-	public void train(TrainSet set, int loops, int batchSize) {
+	public void train(TrainSet set, int numBatches, int batchSize) {
 		if(set.getINPUT_SIZE()!=INPUT_SIZE||set.getOUTPUT_SIZE()!=OUTPUT_SIZE) return;
-		for(int i = 0; i < loops; i++) {
+		for(int i = 0; i < numBatches; i++) {
 			TrainSet batch = set.extractBatch(batchSize);
 			for(int sample = 0; sample<batchSize; sample++) {
 				train(batch.getInput(sample), batch.getOutput(sample), 0.3);
@@ -89,7 +90,6 @@ public class Network {
 			System.out.println(MeanSquaredError(batch));
 		}
 	}
-	
 	
 	/**
 	 * Trains the neural network
@@ -179,6 +179,12 @@ public class Network {
 
 	}
 	
+	/**
+	 * Calculates the mean squared error of a sample
+	 * @param input The values for the first layer
+	 * @param target The expected output for the input
+	 * @return a double representing the mean squared error
+	 */
 	public double MeanSquaredError(double[] input, double[] target) {
 		if(input.length!=INPUT_SIZE||target.length!=OUTPUT_SIZE) return 0;
 		feedForward(input);
@@ -190,7 +196,11 @@ public class Network {
 		//The 2s cancel out. Note that multiplying by a scalar does not affect the location of a minimum.
 		return mse / (2d + target.length);
 	}
-	
+	/**
+	 * Finds the average mean squared error for samples in the TrainSet 'set'
+	 * @param set The TrainSet we are testing
+	 * @return a double representing the average mean squared error of 'set'
+	 */
 	public double MeanSquaredError(TrainSet set) {
 		double mse = 0;
 		for(int i = 0; i < set.size(); i++) {

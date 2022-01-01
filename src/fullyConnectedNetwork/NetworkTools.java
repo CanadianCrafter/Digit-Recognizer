@@ -9,7 +9,7 @@ public class NetworkTools {
 	/**
 	 * Creates a double array filled with the initial value.
 	 * @param size Size of the array created.
-	 * @param initValue Intial value of the array values.
+	 * @param initValue Initial value of the array values.
 	 * @return Returns a double array filled with the initial value.
 	 */
 	public static double[]createArray(int size, double initValue){
@@ -37,6 +37,14 @@ public class NetworkTools {
 		return arr;
 	}
 	
+	/**
+	 * Create a set of integers (there are no repeating values)
+	 * @param size Size of the array.
+	 * @param lowerBound Lower bound for the randomized array values.
+	 * @param upperBound Upper bound for the randomized array values.
+	 * @return Returns an Integer array of set size filled with randomized values between two bounds 
+	 * 		   (inclusive below, exclusive above), with no repeats.
+	 */
 	public static Integer[] createIntegerSet(int size, int lowerBound, int upperBound) {
 		if(size<1) return null;
 		Integer[] arr = new Integer[size];
