@@ -41,9 +41,23 @@ public class MnistImageFile extends MnistFile {
 		double[] input = new double [getItemSize()];
 		for(int i = 0; i < getItemSize(); i++) {
 			//Each pixels range from 0 to 255, so we divide by 255 so the data is normalized to fit in [0,1].
-			//This makes things a lot easier to work with.
-			input[i] = (double) readUnsignedByte() / 255d; 
+			//This makes things a lot easier to work with. This is for reading the MNIST data base.
+//			input[i] = (double) readUnsignedByte() / 255d; 
+			
+			//this is used when reading in numbers that are black and white only. 
+			//If a pixel is only 0.1 black then, it is rounded to white.
+			input[i] = Math.ceil( ((double) readUnsignedByte() / 255d)- 0.1); 
+			
 		}
+//		int index=0;
+//		for(int r = 0; r < numRows; r++) {
+//			for(int c = 0; c < numCols; c++) {
+//				System.out.printf(input[index]<0.10?"   ":  "XX "); 
+//				index++; 
+//			}
+//			System.out.println();
+//		}
+//		System.out.println("======================");
 		return input;
 	}
 

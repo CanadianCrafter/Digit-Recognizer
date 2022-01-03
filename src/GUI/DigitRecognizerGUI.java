@@ -2,8 +2,14 @@ package GUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.*;
+
+import TrainSet.TrainSet;
+import fullyConnectedNetwork.Network;
+import fullyConnectedNetwork.NetworkTools;
+import Mnist.*;
 
 /**
  * This class allows user to draw a digit which the program identifies.
@@ -26,7 +32,9 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 	private static JMenuItem recognize;
 	private static JMenuItem exit;
 	
-	private final int brushRadius = 15; //in pixels
+	private final int brushRadius = 20; //in pixels
+	
+	public static Network network;
 
 	
 	/**
@@ -53,6 +61,16 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		//Network
+		//input layer is 28x28 (size of an image) and output is 10 (10 possible digits)
+		network = new Network(28*28, 70, 35, 10); 
+		TrainSet set = Mnist.createTrainSet(0, 59999);
+		Mnist.trainData(network, set, 10, 50, 100);
+		
+		
+		
+		
+		//GUI
 		window = new JFrame("Digit Recongnizer");  // Create a window and names it.
 		DigitRecognizerGUI content = new DigitRecognizerGUI(28,28,20);  // 28 by 28 grid of 20px x 20px squares
 		window.setContentPane(content);  // Add the Grid panel to the window.
@@ -94,7 +112,6 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 
 	}
 	
-	
 	/**
 	 * Finds the row numbers for grid squares within brushRadius many pixels from a y-coordinate
 	 * @param pixelY a pixel y-coordinate. 
@@ -108,7 +125,6 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 		}
 		return rows;
 	}
-	
 	
 	/**
 	 * Finds the column numbers for grid squares within brushRadius many pixels from a x-coordinate
@@ -133,13 +149,21 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 		for (int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numCols; col++) {
 				if (gridColour[row][col] != null) {
-					input[row*numRows+col]=1;
+					input[row*numCols+col]=1;
 				}
 			}
 		}
+//		int index=0;
+//		for(int r = 0; r < numRows; r++) {
+//			for(int c = 0; c < numCols; c++) {
+//				System.out.printf(input[index]<0.10?"   ":  "XX "); 
+//				index++; 
+//			}
+//			System.out.println();
+//		}
+//		System.out.println("======================");
 		return input;
 	}
-
 
 	/**
 	 * Draws the grid of squares and grid lines (if the colour isn't null).
@@ -147,11 +171,10 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 	protected void paintComponent(Graphics g) {
 		g.setColor(getBackground());
 		g.fillRect(0,0,getWidth(),getHeight());
-		int row, col;
 		double cellWidth = (double)getWidth() / numCols;
 		double cellHeight = (double)getHeight() / numRows;
-		for (row = 0; row < numRows; row++) {
-			for (col = 0; col < numCols; col++) {
+		for (int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numCols; col++) {
 				if (gridColour[row][col] != null) {
 					int x1 = (int)(col*cellWidth);
 					int y1 = (int)(row*cellHeight);
@@ -164,28 +187,25 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 		}
 		if (lineColour != null) {
 			g.setColor(lineColour);
-			for (row = 1; row < numRows; row++) {
+			for (int row = 1; row < numRows; row++) {
 				int y = (int)(row*cellHeight);
 				g.drawLine(0,y,getWidth(),y);
 			}
-			for (col = 1; col < numRows; col++) {
+			for (int col = 1; col < numRows; col++) {
 				int x = (int)(col*cellWidth);
 				g.drawLine(x,0,x,getHeight());
 			}
 		}
 	}
 	
-
 	/**
-	 * A mouse-handling method that is called when the user drags the mouse
-	 * within the panel.  In this case, the grid squares where the user clickes is turned
-	 * black, and the panel is repainted to show the change.
+	 * Turns the grid squares where the user clicks (and holds) black.
 	 */
 	@Override
 	public void mouseDragged(MouseEvent evt) {
 		// the rows and columns in the grid of squares where the user clicked.
 		ArrayList<Integer> rows = findRows(evt.getY() );
-		ArrayList<Integer> cols = findColumns( evt.getX() );
+		ArrayList<Integer> cols = findColumns(evt.getX());
 		for(int row = 0; row <rows.size();row++) {
 			for(int col = 0; col < cols.size();col++) {
 				gridColour[rows.get(row)][cols.get(col)] = Color.BLACK;
@@ -195,15 +215,11 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 		repaint(); // Causes the panel to be redrawn, by calling the paintComponent method.
 	}
 
-	// This is an unneeded mouse event methods.  The definition 
-	// must be here even though it is not used, to satisfy the
-	// "MouseMotionListener" interface.
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
-
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
@@ -218,7 +234,11 @@ public class DigitRecognizerGUI extends JPanel implements ActionListener, MouseM
 		}
 		// recognizes the digit
 		else if (event.getSource() == recognize) {
-			
+			double output[] = network.feedForward(gridToNNInput());
+//			int output = NetworkTools.indexOfMax(network.feedForward(gridToNNInput()));
+			int result = NetworkTools.indexOfMax(output);
+//			System.out.println(Arrays.toString(output));
+			System.out.println(result);
 		}
 		// exits 
 		else if (event.getSource() == exit) {

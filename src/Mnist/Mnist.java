@@ -16,7 +16,7 @@ public class Mnist {
 		//input layer is 28x28 (size of an image) and output is 10 (10 possible digits)
 		Network network = new Network(28*28, 70, 35, 10); 
 		TrainSet set = createTrainSet(0, 49999);
-		trainData(network, set, 1000, 50, 100);
+		trainData(network, set, 10, 50, 100);
 		
 		TrainSet testSet = createTrainSet(50000,59999);
 		testTrainSet(network, testSet);
